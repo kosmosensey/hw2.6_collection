@@ -5,61 +5,52 @@ import org.springframework.stereotype.Service;
 import com.example.hw26collection.exception.EmployeeArrayIsFullException;
 import com.example.hw26collection.exception.EmployeeAlreadyAddedException;
 import com.example.hw26collection.exception.EmployeeNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeServiceInterface {
 
-    private final List<Employee> employee;
+    private final Map<String, Employee> employees;
+    private static final int MAX_SIZE = 12;
 
     public EmployeeServiceImpl() {
-        this.employee = new ArrayList<>();
-        employee.add(new Employee("Антон", "Вершинин"));
-        employee.add(new Employee("Анна", "Миронова"));
-        employee.add(new Employee("Владмир", "Горшков"));
-        employee.add(new Employee("Антон", "Круг"));
-        employee.add(new Employee("Александр", "Кузнецов"));
-        employee.add(new Employee("Антон", "Морозов"));
-        employee.add(new Employee("Антон", "Орлов"));
-        employee.add(new Employee("Ирина", "Егорова"));
-        employee.add(new Employee("Дмитрий", "Павлов"));
-        employee.add(new Employee("Кирилл", "Васильев"));
+        this.employees = new HashMap<>();
     }
 
     public String employee() {
-        return employee.toString();
+        return employees.toString();
     }
 
     @Override
-    public String addEmployee(String firstName, String lastName) {
-        Employee tempEmployee = new Employee(firstName, lastName);
-        if (employee.contains(tempEmployee)) {
+    public Employee addEmployee(String firstName, String lastName) {
+        Employee employee = new Employee(firstName, lastName);
+        if (employees.containsKey(employee.getFullName())) {
             throw new EmployeeAlreadyAddedException("Сотрудник уже существует");
         }
-        if (employee.size() >= 12) {
+        if (employees.size() >= MAX_SIZE) {
             throw new EmployeeArrayIsFullException("Коллекция сотрудников переполнена");
         }
-        employee.add(tempEmployee);
-        return tempEmployee.toString();
+        employees.put(employee.getFullName(), employee);
+        return employee;
     }
 
     @Override
-    public String removeEmployee(String firstName, String lastName) {
-        Employee tempEmployee = new Employee(firstName, lastName);
-        if (!employee.contains(tempEmployee)) {
-            throw new EmployeeNotFoundException("Сотрудник не найден");
-        }
-        employee.removeIf(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName));
-        return tempEmployee.toString();
+    public Employee removeEmployee(String firstName, String lastName) {
+        Employee employee = new Employee(firstName, lastName);
+            if (!employees.containsKey(employee.getFullName())) {
+                throw new EmployeeNotFoundException("Сотрудник не найден");
+            }
+        return employees.remove(employee.getFullName());
     }
 
     @Override
-    public String findEmployee(String firstName, String lastName) {
+    public Employee findEmployee(String firstName, String lastName) {
         Employee tempEmployee = new Employee(firstName, lastName);
-        if (!employee.contains(tempEmployee)) {
+        if (!employees.containsKey(tempEmployee.getFullName())) {
             throw new EmployeeNotFoundException("Сотрудник не найден");
         }
-        return tempEmployee.toString();
+        return employees.get(tempEmployee.getFullName());
     }
 }

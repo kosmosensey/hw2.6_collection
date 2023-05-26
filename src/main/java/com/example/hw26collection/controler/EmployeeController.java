@@ -1,6 +1,6 @@
 package com.example.hw26collection.controler;
 
-import org.springframework.http.HttpStatus;
+import com.example.hw26collection.Employee;
 import org.springframework.web.bind.annotation.*;
 import com.example.hw26collection.service.EmployeeServiceInterface;
 
@@ -20,19 +20,19 @@ public class EmployeeController {
 
     @GetMapping(path = "/add")
 
-    public String addEmployee(@RequestParam("firstName") String firstName,
-                              @RequestParam("lastName") String lastName) {
+    public Employee addEmployee(@RequestParam("firstName") String firstName,
+                                @RequestParam("lastName") String lastName) {
         return employeeService.addEmployee(firstName, lastName);
     }
 
     @GetMapping(path = "/del")
-    public String removeEmployee(@RequestParam("firstName") String firstName,
+    public Employee removeEmployee(@RequestParam("firstName") String firstName,
                                  @RequestParam("lastName") String lastName) {
         return employeeService.removeEmployee(firstName, lastName);
     }
 
     @GetMapping(path = "/find")
-    public String findEmployee(@RequestParam("firstName") String firstName,
+    public Employee findEmployee(@RequestParam("firstName") String firstName,
                                @RequestParam("lastName") String lastName) {
         return employeeService.findEmployee(firstName, lastName);
     }
